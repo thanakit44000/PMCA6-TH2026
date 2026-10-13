@@ -10,8 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="config.js"></script>
     
+    <script src="config.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -52,17 +52,17 @@
         }
         .animate-modal { animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .hidden-view { display: none !important; }
-        :is(#team-all-grid, #team-advisor-grid, #team-st-grid, #team-supportCommittee-grid) > div > .flex > div:first-child {
+        :is(#team-all-grid, #team-projectLead-grid, #team-advisor-grid, #team-st-grid, #team-supportCommittee-grid) > div > .flex > div:first-child {
             width: 6rem !important;
             height: 7.5rem !important;
             border-radius: 1.25rem !important;
         }
-        :is(#team-all-grid, #team-advisor-grid, #team-st-grid, #team-supportCommittee-grid) > div > .flex > div:first-child img {
+        :is(#team-all-grid, #team-projectLead-grid, #team-advisor-grid, #team-st-grid, #team-supportCommittee-grid) > div > .flex > div:first-child img {
             object-fit: cover;
             object-position: center top;
         }
         @media (min-width: 1280px) {
-            :is(#team-all-grid, #team-advisor-grid, #team-st-grid, #team-supportCommittee-grid) {
+            :is(#team-all-grid, #team-projectLead-grid, #team-advisor-grid, #team-st-grid, #team-supportCommittee-grid) {
                 grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
             }
         }
@@ -87,6 +87,10 @@
         .btn-loading { position: relative; pointer-events: none; color: transparent !important; }
         .btn-loading::after { content: ''; position: absolute; width: 1.2rem; height: 1.2rem; top: 50%; left: 50%; margin-top: -0.6rem; margin-left: -0.6rem; border: 2px solid white; border-radius: 50%; border-top-color: transparent; animation: spin 0.8s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes teacher-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .teacher-marquee-track { display: flex; width: max-content; animation: teacher-marquee var(--marquee-duration, 55s) linear infinite; will-change: transform; }
+        .teacher-marquee:hover .teacher-marquee-track, .teacher-marquee:focus-within .teacher-marquee-track { animation-play-state: paused; }
+        @media (prefers-reduced-motion: reduce) { .teacher-marquee-track { animation: none; } }
         
         @media (hover: none) {
             .group-hover\:opacity-100 { opacity: 1 !important; }
@@ -170,6 +174,7 @@
                         <i class="fa-solid fa-users"></i> <span id="nav-text-teachers">ครู PMCA6 ทั้งหมด</span>
                     </button>
                     <button id="nav-btn-pr" onclick="appState.navigateTo('pr')" class="hidden md:flex items-center gap-2 px-3 py-2.5 rounded-full text-sm font-medium text-pmca-purple bg-pmca-pastel hover:bg-purple-200 transition-colors"><i class="fa-solid fa-bullhorn"></i> ข่าวสารส่วนกลาง</button>
+                    <button id="nav-btn-conference" onclick="appState.navigateTo('conference')" class="hidden-view md:flex items-center gap-2 px-3 py-2.5 rounded-full text-sm font-bold text-amber-800 bg-amber-100 hover:bg-amber-200 transition-colors"><i class="fa-solid fa-person-chalkboard"></i> <span id="nav-text-conference">เวทีประชุมวิชาการ</span></button>
                     <button id="nav-btn-supervisors" onclick="showTeamCategory('committee')" class="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors">
                         <i class="fa-solid fa-people-group"></i> คณะทำงาน
                     </button>
@@ -177,6 +182,10 @@
                     <button id="nav-btn-admin" onclick="appState.navigateTo('admin')" class="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-bold text-white bg-gradient-to-r from-gray-900 to-pmca-purple hover:shadow-lg transition-all hidden-view">
                         <i class="fa-solid fa-shield-halved"></i> ผู้ดูแล
                     </button>
+                    <div class="hidden md:block relative notranslate" translate="no">
+                        <button type="button" onclick="toggleLanguageMenu(event)" class="flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-bold text-pmca-purple bg-white border border-purple-100 hover:bg-purple-50 transition-colors shadow-sm" aria-haspopup="true"><i class="fa-solid fa-globe"></i><span id="current-language-label">ภาษาไทย</span><i class="fa-solid fa-chevron-down text-[10px]"></i></button>
+                        <div id="language-menu" class="hidden absolute right-0 top-full mt-2 w-52 p-2 rounded-2xl bg-white border border-gray-100 shadow-2xl z-[70]"><button type="button" onclick="changeSiteLanguage('th')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-purple-50 text-sm"><span class="text-lg">🇹🇭</span>ภาษาไทย</button><button type="button" onclick="changeSiteLanguage('en')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-purple-50 text-sm"><span class="text-lg">🇬🇧</span>English</button><button type="button" onclick="changeSiteLanguage('zh-CN')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-purple-50 text-sm"><span class="text-lg">🇨🇳</span>中文</button><button type="button" onclick="changeSiteLanguage('ja')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-purple-50 text-sm"><span class="text-lg">🇯🇵</span>日本語</button><button type="button" onclick="changeSiteLanguage('ko')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-purple-50 text-sm"><span class="text-lg">🇰🇷</span>한국어</button></div>
+                    </div>
                     <button id="nav-role-btn" onclick="openLoginModal()" class="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-bold text-white bg-gradient-to-r from-pmca-purple to-violet-500 hover:shadow-lg hover:-translate-y-0.5 transition-all">
                         <i class="fa-solid fa-right-to-bracket"></i> Login
                     </button>
@@ -203,6 +212,7 @@
                 <button id="mob-btn-pr" onclick="appState.navigateTo('pr'); toggleMobileMenu();" class="flex items-center justify-start gap-3 px-5 py-3.5 rounded-2xl text-sm font-bold text-pmca-purple bg-pmca-pastel hover:bg-purple-200 transition-colors">
                     <i class="fa-solid fa-bullhorn w-5 text-center text-lg"></i> <span id="mob-text-pr">ข่าวสารส่วนกลาง</span>
                 </button>
+                <button id="mob-btn-conference" onclick="appState.navigateTo('conference'); toggleMobileMenu();" class="hidden-view items-center justify-start gap-3 px-5 py-3.5 rounded-2xl text-sm font-bold text-amber-800 bg-amber-100 hover:bg-amber-200 transition-colors"><i class="fa-solid fa-person-chalkboard w-5 text-center text-lg"></i> <span id="mob-text-conference">เวทีประชุมวิชาการ</span></button>
                 <button id="mob-btn-supervisors" onclick="showTeamCategory('committee'); toggleMobileMenu();" class="flex items-center justify-start gap-3 px-5 py-3.5 rounded-2xl text-sm font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors">
                     <i class="fa-solid fa-people-group w-5 text-center text-lg"></i> คณะทำงาน
                 </button>
@@ -212,6 +222,7 @@
                 <button id="mob-btn-admin" onclick="appState.navigateTo('admin'); toggleMobileMenu();" class="flex items-center justify-start gap-3 px-5 py-3.5 rounded-2xl text-sm font-bold text-white bg-gradient-to-r from-gray-900 to-pmca-purple transition-colors hidden-view">
                     <i class="fa-solid fa-shield-halved w-5 text-center text-lg"></i> หน้าผู้ดูแล
                 </button>
+                <div class="notranslate rounded-2xl border border-purple-100 bg-white p-3" translate="no"><p class="text-xs font-bold text-gray-500 mb-2"><i class="fa-solid fa-language text-pmca-purple mr-2"></i>เลือกภาษา</p><div class="grid grid-cols-5 gap-1"><button type="button" onclick="changeSiteLanguage('th')" class="py-2 rounded-xl hover:bg-purple-50 text-xl" title="ภาษาไทย">🇹🇭</button><button type="button" onclick="changeSiteLanguage('en')" class="py-2 rounded-xl hover:bg-purple-50 text-xl" title="English">🇬🇧</button><button type="button" onclick="changeSiteLanguage('zh-CN')" class="py-2 rounded-xl hover:bg-purple-50 text-xl" title="中文">🇨🇳</button><button type="button" onclick="changeSiteLanguage('ja')" class="py-2 rounded-xl hover:bg-purple-50 text-xl" title="日本語">🇯🇵</button><button type="button" onclick="changeSiteLanguage('ko')" class="py-2 rounded-xl hover:bg-purple-50 text-xl" title="한국어">🇰🇷</button></div></div>
                 
                 <!-- ปุ่ม Login Mobile -->
                 <button id="mob-auth-btn" onclick="openLoginModal(); toggleMobileMenu();" class="flex items-center justify-start gap-3 px-5 py-3.5 rounded-2xl text-sm font-bold text-white bg-gradient-to-r from-pmca-purple to-violet-500 hover:shadow-md transition-all mt-2">
@@ -220,6 +231,7 @@
             </div>
         </div>
     </nav>
+    <div id="google_translate_element" class="fixed -left-[9999px] top-0 w-px h-px overflow-hidden" aria-hidden="true"></div>
 
     <main class="max-w-7xl mx-auto px-4 mt-8 sm:mt-10 w-full flex-1 relative">
         
@@ -282,6 +294,11 @@
                          <div class="relative z-10 flex items-center gap-2 mt-2 text-[11px] text-purple-200"><i class="fa-solid fa-hand-pointer"></i><span>เลื่อนดูรายชื่อเพิ่มเติม หรือคลิกการ์ดเพื่อชมประวัติและผลงาน</span></div>
                          </div>
                      </div>
+
+                     <section class="teacher-network-strip mb-10 rounded-[2rem] bg-white/75 border border-purple-100 shadow-sm overflow-hidden">
+                         <div class="px-6 pt-6 flex items-center justify-between gap-4"><div><h3 class="font-bold text-gray-900 text-lg"><i class="fa-solid fa-people-group text-pmca-purple mr-2"></i>เครือข่ายครู PMCA6 ทั่วประเทศ</h3><p class="text-xs text-gray-500 mt-1">คลิกที่ภาพเพื่อชมประวัติและผลงาน</p></div><button onclick="appState.navigateTo('teachers')" class="shrink-0 px-4 py-2 rounded-xl bg-purple-50 text-pmca-purple text-xs font-bold hover:bg-purple-100">ชมทั้งหมด</button></div>
+                         <div id="national-teacher-marquee" class="teacher-marquee overflow-hidden py-5"></div>
+                     </section>
                      
                      <!-- ภูมิภาค Cards -->
                      <div class="pt-8 border-t border-gray-100">
@@ -450,6 +467,7 @@
                 <button id="admin-tab-btn-overview" onclick="switchAdminTab('overview')" class="admin-tab-btn whitespace-nowrap flex-1 px-5 py-3 rounded-2xl bg-gray-900 text-white text-sm font-bold"><i class="fa-solid fa-gauge-high mr-2"></i>ภาพรวม</button>
                 <button id="admin-tab-btn-analytics" onclick="switchAdminTab('analytics')" class="admin-tab-btn whitespace-nowrap flex-1 px-5 py-3 rounded-2xl text-gray-500 hover:bg-purple-50 text-sm font-bold"><i class="fa-solid fa-chart-column mr-2"></i>วิเคราะห์ข้อมูล</button>
                 <button id="admin-tab-btn-manage" onclick="switchAdminTab('manage')" class="admin-tab-btn whitespace-nowrap flex-1 px-5 py-3 rounded-2xl text-gray-500 hover:bg-purple-50 text-sm font-bold"><i class="fa-solid fa-database mr-2"></i>จัดการข้อมูล</button>
+                <button id="admin-tab-btn-conference" onclick="switchAdminTab('conference')" class="admin-tab-btn whitespace-nowrap flex-1 px-5 py-3 rounded-2xl text-gray-500 hover:bg-amber-50 text-sm font-bold"><i class="fa-solid fa-person-chalkboard mr-2"></i>แท็บเฉพาะกิจ</button>
             </nav>
 
             <div id="admin-tab-overview" class="admin-tab-panel space-y-6">
@@ -549,6 +567,18 @@
                     <table class="w-full min-w-[1050px] text-left"><thead class="sticky top-0 z-10 bg-slate-900 text-white text-xs"><tr><th class="p-4">#</th><th class="p-4">ชื่อโครงการ</th><th class="p-4">ผู้รับผิดชอบ</th><th class="p-4">จังหวัด / ภูมิภาค</th><th class="p-4">ประเภทรางวัล</th><th class="p-4">สถานะ</th><th class="p-4 text-center">จัดการ</th></tr></thead><tbody id="admin-project-tbody" class="divide-y divide-gray-100 bg-white text-sm"></tbody></table>
                 </div>
             </section>
+
+            <section id="admin-tab-conference" class="admin-tab-panel hidden-view glass-card rounded-[2.5rem] p-6 sm:p-10">
+                <div class="max-w-3xl"><h3 class="text-xl font-bold text-gray-900"><i class="fa-solid fa-person-chalkboard text-amber-500 mr-2"></i>ตั้งค่าแท็บเวทีประชุมวิชาการ</h3><p class="text-sm text-gray-500 mt-1 mb-7">การเปิดหรือปิดแท็บนี้ไม่เปลี่ยนสถานะครูที่ปักหมุด</p>
+                <form onsubmit="handleConferenceSettingsSubmit(event)" class="space-y-5">
+                    <label class="flex items-center justify-between gap-4 p-5 rounded-2xl bg-amber-50 border border-amber-200"><span><span class="block font-bold text-amber-900">เปิดให้ผู้เข้าชมเห็นแท็บ</span><span class="block text-xs text-amber-700 mt-1">เมื่อปิด เมนูและหน้าเฉพาะกิจจะถูกซ่อน แต่ข้อมูลยังอยู่ครบ</span></span><input id="conference-enabled" type="checkbox" class="w-6 h-6 rounded text-amber-500"></label>
+                    <div><label class="block text-sm font-bold text-gray-700 mb-2">ชื่อแท็บ</label><input id="conference-title-input" maxlength="80" class="w-full px-4 py-3 rounded-2xl border" required></div>
+                    <div><label class="block text-sm font-bold text-gray-700 mb-2">หัวเรื่อง</label><input id="conference-heading-input" maxlength="160" class="w-full px-4 py-3 rounded-2xl border" required></div>
+                    <div><label class="block text-sm font-bold text-gray-700 mb-2">คำอธิบาย</label><textarea id="conference-description-input" maxlength="500" rows="3" class="w-full px-4 py-3 rounded-2xl border"></textarea></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="block text-sm font-bold text-gray-700 mb-2">วันและเวลา</label><input id="conference-date-input" maxlength="100" class="w-full px-4 py-3 rounded-2xl border" placeholder="เช่น 20 ธันวาคม 2569 เวลา 09.00 น."></div><div><label class="block text-sm font-bold text-gray-700 mb-2">สถานที่</label><input id="conference-location-input" maxlength="180" class="w-full px-4 py-3 rounded-2xl border" placeholder="ชื่อสถานที่จัดงาน"></div></div>
+                    <button id="btn-save-conference-settings" class="px-6 py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold shadow-sm"><i class="fa-solid fa-floppy-disk mr-2"></i>บันทึกการตั้งค่า</button>
+                </form></div>
+            </section>
         </div>
 
         <!-- VIEW 1: REGIONAL DASHBOARD -->
@@ -590,6 +620,11 @@
                         </div>
                         
                     </div>
+
+                    <section class="teacher-network-strip mb-8 rounded-[2rem] bg-white/80 border border-purple-100 shadow-sm overflow-hidden">
+                        <div class="px-6 pt-6 flex items-center justify-between gap-4"><div><h3 class="font-bold text-gray-900 text-lg"><i class="fa-solid fa-people-group text-pmca-purple mr-2"></i>เครือข่ายครูในภูมิภาคนี้</h3><p class="text-xs text-gray-500 mt-1">คลิกที่ภาพเพื่อชมประวัติและผลงาน</p></div><button onclick="appState.navigateTo('teachers')" class="shrink-0 px-4 py-2 rounded-xl bg-purple-50 text-pmca-purple text-xs font-bold hover:bg-purple-100">ชมทั้งหมด</button></div>
+                        <div id="regional-teacher-marquee" class="teacher-marquee overflow-hidden py-5"></div>
+                    </section>
 
                     <!-- Main Stats -->
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 w-full mb-6">
@@ -707,6 +742,15 @@
             </section>
         </div>
 
+        <!-- VIEW: CONFERENCE (admin-controlled) -->
+        <div id="view-conference" class="space-y-8 hidden-view">
+            <section class="rounded-[2.5rem] overflow-hidden relative p-8 sm:p-12 text-white bg-gradient-to-br from-slate-950 via-purple-950 to-violet-700 shadow-2xl">
+                <div class="absolute -right-20 -top-24 w-80 h-80 rounded-full bg-amber-300/20 blur-3xl"></div><div class="absolute -left-20 -bottom-28 w-80 h-80 rounded-full bg-fuchsia-300/15 blur-3xl"></div>
+                <div class="relative"><span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-300 text-purple-950 text-xs font-black mb-5"><i class="fa-solid fa-person-chalkboard"></i> เวทีแลกเปลี่ยนเรียนรู้</span><h2 id="conference-heading" class="text-3xl sm:text-5xl font-black leading-tight">ตัวแทนครู PMCA6 ร่วมนำเสนอผลงาน</h2><p id="conference-description" class="text-purple-100 mt-4 text-base sm:text-lg max-w-3xl">ร่วมชม แลกเปลี่ยนเรียนรู้ และส่งกำลังใจให้ตัวแทนครู PMCA6</p><div id="conference-meta" class="flex flex-wrap gap-3 mt-6"></div></div>
+            </section>
+            <section class="glass-card rounded-[2.5rem] p-6 sm:p-10"><div class="flex items-center justify-between gap-4 mb-7"><div><h3 class="text-2xl font-bold text-gray-900">ครูตัวแทนนำเสนอ</h3><p class="text-sm text-gray-500 mt-1">รายชื่อใช้ข้อมูลจากระบบปักหมุดเดิม โดยไม่เปลี่ยนแปลงสถานะ</p></div><span id="conference-teacher-count" class="px-4 py-2 rounded-full bg-amber-100 text-amber-800 text-sm font-bold">0 คน</span></div><div id="conference-teachers-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div></section>
+        </div>
+
         <!-- VIEW 2: TEACHERS -->
         <div id="view-teachers" class="space-y-8 hidden-view">
             <section class="space-y-6">
@@ -723,10 +767,11 @@
                     </div>
                     
                     <div class="flex flex-col lg:flex-row items-stretch lg:items-center gap-3 w-full xl:w-auto">
-                        <div class="relative w-full lg:w-64 flex-1">
-                            <input type="text" id="search-input" onkeyup="renderTeachers()" placeholder="ค้นหาชื่อ โรงเรียน จังหวัด หรือสังกัด..." 
-                                   class="w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-200 focus:outline-none focus:ring-4 focus:ring-pmca-light/20 focus:border-pmca-light text-sm bg-gray-50 hover:bg-white transition-all shadow-sm">
+                        <div class="relative w-full lg:w-72 flex-1">
+                            <input type="search" id="search-input" oninput="renderTeachers()" placeholder="ค้นหาชื่อ โรงเรียน จังหวัด หรือสังกัด..." autocomplete="off"
+                                   class="w-full pl-11 pr-12 py-3 rounded-2xl border border-gray-200 focus:outline-none focus:ring-4 focus:ring-pmca-light/20 focus:border-pmca-light text-sm bg-gray-50 hover:bg-white transition-all shadow-sm">
                             <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-gray-400"></i>
+                            <button type="button" onclick="clearTeacherSearch()" class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-xl text-gray-400 hover:text-pmca-purple hover:bg-purple-50" title="ล้างคำค้นหา" aria-label="ล้างคำค้นหา"><i class="fa-solid fa-xmark"></i></button>
                         </div>
                         
                         <div class="flex items-center gap-3 shrink-0 flex-wrap sm:flex-nowrap">
@@ -783,6 +828,10 @@
                     <select id="affiliation-office-filter" onchange="renderTeachers()" class="px-4 py-3 rounded-2xl border border-gray-200 focus:outline-none focus:ring-4 focus:ring-pmca-light/20 focus:border-pmca-light text-sm bg-gray-50 hover:bg-white transition-all shadow-sm w-full cursor-pointer text-violet-700 font-medium">
                         <option value="">ทุกสำนักงาน</option>
                     </select>
+                    <div class="sm:col-span-2 lg:col-span-3 xl:col-span-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+                        <p id="teachers-result-count" class="text-sm text-gray-500">กำลังแสดงข้อมูลครูทั้งหมด</p>
+                        <button type="button" onclick="clearTeacherFilters()" class="self-start sm:self-auto px-4 py-2 rounded-xl bg-purple-50 text-pmca-purple hover:bg-purple-100 text-sm font-bold transition-colors"><i class="fa-solid fa-filter-circle-xmark mr-2"></i>ล้างคำค้นหาและตัวกรอง</button>
+                    </div>
                 </div>
 
                 <!-- พื้นที่แสดงผล (Grid หรือ Table) -->
@@ -816,7 +865,7 @@
         <!-- VIEW: TEAM HUB -->
         <div id="view-supervisors" class="space-y-6 hidden-view">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-[2rem] shadow-sm border border-blue-100">
-                <div class="flex items-center gap-4"><div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600"><i class="fa-solid fa-people-group text-2xl"></i></div><div><h3 id="supervisors-view-title" class="font-bold text-gray-900 text-xl">คณะทำงานเครือข่ายครู PMCA6</h3><p id="supervisors-view-desc" class="text-sm text-gray-500 mt-1">ที่ปรึกษาและคณะสนับสนุนเครือข่ายครู PMCA6</p></div></div>
+                <div class="flex items-center gap-4"><div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600"><i class="fa-solid fa-people-group text-2xl"></i></div><div><h3 id="supervisors-view-title" class="font-bold text-gray-900 text-xl">คณะทำงานเครือข่ายครู PMCA6</h3><p id="supervisors-view-desc" class="text-sm text-gray-500 mt-1">หัวหน้าโครงการ ที่ปรึกษา และคณะสนับสนุนเครือข่ายครู PMCA6</p></div></div>
                 <button id="btn-add-directory-member" onclick="openSupervisorModal()" class="editor-only hidden-view bg-blue-600 hover:bg-blue-700 text-white px-6 py-3.5 rounded-2xl text-sm font-bold shadow-sm flex items-center gap-2 w-full sm:w-auto justify-center"><i class="fa-solid fa-plus"></i> เพิ่มคณะทำงาน</button>
             </div>
             <section id="team-chart-section" class="bg-white rounded-[2rem] border border-blue-100 shadow-sm overflow-hidden">
@@ -831,7 +880,7 @@
                 <div class="relative"><i class="fa-solid fa-search absolute left-5 top-4 text-gray-400"></i><input id="supervisor-search" oninput="renderSupervisors()" placeholder="ค้นหาชื่อ ตำแหน่ง หน่วยงาน หรือจังหวัด..." class="w-full pl-12 pr-14 py-4 rounded-2xl bg-gray-50 border border-gray-200 outline-none focus:ring-4 focus:ring-blue-100"><button onclick="clearTeamSearch()" class="absolute right-3 top-2.5 w-10 h-10 rounded-xl text-gray-400 hover:bg-white hover:text-gray-700" title="ล้างคำค้น"><i class="fa-solid fa-xmark"></i></button></div>
                 <div class="flex flex-col lg:flex-row gap-3 justify-between">
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1">
-                        <select id="supervisor-type-filter" onchange="renderSupervisors()" class="px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm"><option value="all">ทุกประเภทคณะทำงาน</option><option value="advisor">ที่ปรึกษา</option><option value="st">ทีมสนับสนุน (ST)</option><option value="supportCommittee">คณะสนับสนุน</option></select>
+                        <select id="supervisor-type-filter" onchange="renderSupervisors()" class="px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm"><option value="all">ทุกประเภทคณะทำงาน</option><option value="projectLead">หัวหน้าโครงการ</option><option value="advisor">ที่ปรึกษา</option><option value="st">ทีมสนับสนุน (ST)</option><option value="supportCommittee">คณะสนับสนุน</option></select>
                         <select id="supervisor-region-filter" onchange="renderSupervisors()" class="px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm"><option value="all">ทุกภูมิภาค</option><option>ส่วนกลาง</option><option>ภาคเหนือ</option><option>ภาคตะวันออกเฉียงเหนือ 1</option><option>ภาคตะวันออกเฉียงเหนือ 2</option><option>ภาคกลางและตะวันออก</option><option>กทม. และปริมณฑล</option><option>ภาคใต้</option></select>
                         <select id="supervisor-sort" onchange="renderSupervisors()" class="px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm"><option value="recommended">ลำดับการอัปโหลด (ก่อน → หลัง)</option><option value="name">เรียงตามชื่อ</option><option value="region">เรียงตามภูมิภาค</option><option value="teachers">เรียงตามจำนวนครูที่ดูแล</option><option value="newest">เพิ่มล่าสุด</option></select>
                     </div>
@@ -844,6 +893,7 @@
                 <p id="team-result-count" class="text-xs text-gray-500 px-1"></p>
             </div>
             <div id="team-grouped-view" class="space-y-6">
+                <section class="bg-white/70 p-6 sm:p-8 rounded-[2rem] border border-purple-100"><div class="flex items-center gap-3 mb-6"><div class="w-11 h-11 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center"><i class="fa-solid fa-crown"></i></div><div><h3 class="font-bold text-gray-900 text-lg">หัวหน้าโครงการ <span id="team-projectLead-count" class="text-sm text-purple-700"></span></h3><p class="text-xs text-gray-500">ผู้รับผิดชอบและกำกับภาพรวมการดำเนินโครงการ</p></div></div><div id="team-projectLead-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div></section>
                 <section class="bg-white/70 p-6 sm:p-8 rounded-[2rem] border border-orange-100"><div class="flex items-center gap-3 mb-6"><div class="w-11 h-11 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center"><i class="fa-solid fa-user-group"></i></div><div><h3 class="font-bold text-gray-900 text-lg">ที่ปรึกษา <span id="team-advisor-count" class="text-sm text-orange-600"></span></h3><p class="text-xs text-gray-500">ผู้ให้คำปรึกษาและข้อเสนอแนะต่อการดำเนินงาน</p></div></div><div id="team-advisor-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div></section>
                 <section class="bg-white/70 p-6 sm:p-8 rounded-[2rem] border border-blue-100"><div class="flex items-center gap-3 mb-6"><div class="w-11 h-11 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-user-tie"></i></div><div><h3 class="font-bold text-gray-900 text-lg">ทีมสนับสนุน (ST) <span id="team-st-count" class="text-sm text-blue-600"></span></h3><p class="text-xs text-gray-500">ทีมสนับสนุนที่ดูแลครูและประสานงานในแต่ละจังหวัด</p></div></div><div id="team-st-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div></section>
                 <section class="bg-white/70 p-6 sm:p-8 rounded-[2rem] border border-teal-100"><div class="flex items-center gap-3 mb-6"><div class="w-11 h-11 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center"><i class="fa-solid fa-people-carry-box"></i></div><div><h3 class="font-bold text-gray-900 text-lg">คณะสนับสนุน <span id="team-supportCommittee-count" class="text-sm text-teal-600"></span></h3><p class="text-xs text-gray-500">คณะทำงานที่สนับสนุนการประสานงานและการดำเนินกิจกรรม</p></div></div><div id="team-supportCommittee-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div></section>
@@ -1011,42 +1061,6 @@
                 </div>
             </div>
 
-            <!-- Lightweight Digital Twin: calculated in the browser from existing profile data -->
-            <section id="profile-digital-twin" class="bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 text-white p-6 sm:p-9 rounded-[2.5rem] shadow-xl overflow-hidden relative">
-                <div class="absolute -right-16 -top-20 w-64 h-64 rounded-full bg-fuchsia-400/15 blur-3xl pointer-events-none"></div>
-                <div class="absolute -left-20 -bottom-24 w-72 h-72 rounded-full bg-blue-400/10 blur-3xl pointer-events-none"></div>
-                <div class="relative">
-                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-7">
-                        <div>
-                            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-[11px] font-bold text-purple-100"><i class="fa-solid fa-fingerprint"></i> DIGITAL TWIN</span>
-                            <h3 class="text-2xl sm:text-3xl font-bold mt-3">ภาพสะท้อนความพร้อมของข้อมูล</h3>
-                            <p class="text-sm text-purple-200/80 mt-1">ประเมินอัตโนมัติจากประวัติ โครงการ และแฟ้มผลงานที่มีอยู่ในระบบ</p>
-                        </div>
-                        <span id="twin-readiness-badge" class="self-start lg:self-auto px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm font-bold">กำลังประเมิน...</span>
-                    </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-[190px_1fr] gap-7 lg:gap-10 items-center">
-                        <div class="flex flex-col items-center">
-                            <div id="twin-score-ring" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" class="w-40 h-40 rounded-full p-3 shadow-2xl" style="background:conic-gradient(#a855f7 0%,rgba(255,255,255,.12) 0)">
-                                <div class="w-full h-full rounded-full bg-slate-950 flex flex-col items-center justify-center border border-white/10">
-                                    <div><span id="twin-score" class="text-4xl font-black">0</span><span class="text-lg text-purple-200">%</span></div>
-                                    <span class="text-[11px] text-gray-400 mt-1">ความพร้อม</span>
-                                </div>
-                            </div>
-                            <p id="twin-last-update" class="text-xs text-purple-200/70 text-center mt-4">ยังไม่มีการอัปเดตผลงาน</p>
-                        </div>
-                        <div>
-                            <div class="grid grid-cols-3 gap-3 mb-5">
-                                <div class="rounded-2xl bg-white/10 border border-white/10 p-4 text-center"><p id="twin-item-count" class="text-2xl font-black">0</p><p class="text-[11px] text-purple-200 mt-1">ผลงาน</p></div>
-                                <div class="rounded-2xl bg-white/10 border border-white/10 p-4 text-center"><p id="twin-image-count" class="text-2xl font-black">0</p><p class="text-[11px] text-purple-200 mt-1">รูปภาพ</p></div>
-                                <div class="rounded-2xl bg-white/10 border border-white/10 p-4 text-center"><p id="twin-category-count" class="text-2xl font-black">0</p><p class="text-[11px] text-purple-200 mt-1">ประเภทผลงาน</p></div>
-                            </div>
-                            <div id="twin-checklist" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
-                            <p class="text-[10px] text-purple-200/50 mt-4"><i class="fa-solid fa-circle-info mr-1"></i>คะแนนนี้ใช้ช่วยตรวจความครบถ้วนของข้อมูล ไม่ใช่คะแนนประเมินคุณภาพของครูหรือผลงาน</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             <div id="profile-supervisors-section" class="bg-white p-6 sm:p-8 rounded-[2.5rem] shadow-sm border border-blue-100 hidden-view">
                 <div class="flex items-center gap-3 mb-5"><div class="w-11 h-11 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-user-tie"></i></div><div><h3 class="font-bold text-gray-900 text-lg">ทีมสนับสนุน (ST) ผู้ดูแล</h3><p class="text-xs text-gray-500">สามารถมีผู้ดูแลได้มากกว่าหนึ่งคน</p></div></div>
                 <div id="profile-supervisors-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
@@ -1166,7 +1180,7 @@
             <form id="supervisor-form" onsubmit="handleSupervisorSubmit(event)" class="p-8 overflow-y-auto custom-scrollbar space-y-5">
                 <div class="flex items-center gap-5"><div id="st-avatar-preview" class="w-20 h-20 rounded-2xl bg-blue-100 text-blue-500 flex items-center justify-center overflow-hidden shrink-0"><i class="fa-solid fa-user-tie text-3xl"></i></div><input type="file" id="st-avatar" accept="image/*" class="w-full text-sm" onchange="previewImage(this,'st-avatar-preview')"></div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label class="block text-sm font-bold mb-2">ชื่อ-นามสกุล *</label><input id="st-name" required class="w-full px-4 py-3 rounded-xl border border-gray-300"></div><div><label class="block text-sm font-bold mb-2">ตำแหน่ง</label><input id="st-position" class="w-full px-4 py-3 rounded-xl border border-gray-300" placeholder="ศึกษานิเทศก์"></div></div>
-                <div><label class="block text-sm font-bold mb-2">ประเภทคณะทำงาน *</label><select id="st-memberType" required onchange="updateTeamMemberFields()" class="w-full px-4 py-3 rounded-xl border border-blue-200 bg-blue-50 font-bold text-blue-900"><option value="advisor">ที่ปรึกษา</option><option value="st" selected>ทีมสนับสนุน (ST)</option><option value="supportCommittee">คณะสนับสนุน</option></select></div>
+                <div><label class="block text-sm font-bold mb-2">ประเภทคณะทำงาน *</label><select id="st-memberType" required onchange="updateTeamMemberFields()" class="w-full px-4 py-3 rounded-xl border border-blue-200 bg-blue-50 font-bold text-blue-900"><option value="projectLead">หัวหน้าโครงการ</option><option value="advisor">ที่ปรึกษา</option><option value="st" selected>ทีมสนับสนุน (ST)</option><option value="supportCommittee">คณะสนับสนุน</option></select></div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label class="block text-sm font-bold mb-2">ภูมิภาค *</label><select id="st-region" required class="w-full px-4 py-3 rounded-xl border border-gray-300"><option value="ส่วนกลาง">ส่วนกลาง</option><option value="ภาคเหนือ">ภาคเหนือ</option><option value="ภาคตะวันออกเฉียงเหนือ 1">ภาคตะวันออกเฉียงเหนือ 1</option><option value="ภาคตะวันออกเฉียงเหนือ 2">ภาคตะวันออกเฉียงเหนือ 2</option><option value="ภาคกลางและตะวันออก">ภาคกลางและตะวันออก</option><option value="กทม. และปริมณฑล">กทม. และปริมณฑล</option><option value="ภาคใต้">ภาคใต้</option></select></div><div><label class="block text-sm font-bold mb-2">หน่วยงาน</label><input id="st-agency" class="w-full px-4 py-3 rounded-xl border border-gray-300"></div></div>
                 <div id="st-provinces-field"><label class="block text-sm font-bold mb-2">จังหวัดที่รับผิดชอบ *</label><input id="st-provinces" required class="w-full px-4 py-3 rounded-xl border border-gray-300" placeholder="เช่น เชียงใหม่, ลำพูน, ลำปาง"><p class="text-xs text-gray-400 mt-2">กรณีหลายจังหวัด ให้คั่นด้วยเครื่องหมายจุลภาค</p></div>
                 <div id="st-teachers-field" class="bg-purple-50/60 p-5 rounded-2xl border border-purple-100"><label class="block text-sm font-bold text-purple-900 mb-2"><i class="fa-solid fa-users mr-2"></i>เลือกครูที่รับผิดชอบ</label><select id="st-teachers" multiple size="6" class="w-full px-4 py-3 rounded-xl border border-purple-200 bg-white text-sm outline-none focus:ring-4 focus:ring-purple-100"></select><p class="text-xs text-purple-600 mt-2">เลือกได้หลายคน โดยกด Ctrl ค้างไว้ขณะเลือก ครูในภูมิภาคเดียวกันจะแสดงก่อน</p></div>
@@ -1647,8 +1661,66 @@
             }
         };
 
+        const PMCA_LANGUAGES = {th:'ภาษาไทย',en:'English','zh-CN':'中文',ja:'日本語',ko:'한국어'};
+        window.toggleLanguageMenu = function(event) {
+            if (event) event.stopPropagation();
+            document.getElementById('language-menu')?.classList.toggle('hidden');
+        };
+        window.updateLanguageLabel = function(lang) {
+            const label = document.getElementById('current-language-label');
+            if (label) label.innerText = PMCA_LANGUAGES[lang] || PMCA_LANGUAGES.th;
+        };
+        window.clearTranslateCookies = function() {
+            const paths = ['/', location.pathname.replace(/[^/]*$/, '') || '/'];
+            const domains = ['', location.hostname, location.hostname ? `.${location.hostname}` : ''];
+            const hostParts = location.hostname.split('.').filter(Boolean);
+            for (let i = 1; i < hostParts.length - 1; i++) domains.push(`.${hostParts.slice(i).join('.')}`);
+            [...new Set(paths)].forEach(path => [...new Set(domains)].forEach(domain => {
+                document.cookie = `googtrans=;expires=Thu, 01 Jan 1970 00:00:00 GMT;max-age=0;path=${path}${domain ? `;domain=${domain}` : ''}`;
+            }));
+        };
+        window.setTranslateCookie = function(lang) {
+            window.clearTranslateCookies();
+            if (lang === 'th' || !location.hostname) return;
+            const value = `/th/${lang}`;
+            document.cookie = `googtrans=${value};path=/;max-age=31536000;SameSite=Lax`;
+            document.cookie = `googtrans=${value};path=/;domain=.${location.hostname};max-age=31536000;SameSite=Lax`;
+        };
+        window.applySavedLanguage = function(lang, attempt = 0) {
+            if (!lang || lang === 'th') return;
+            const combo = document.querySelector('.goog-te-combo');
+            if (combo) {
+                // ไม่สั่งแปลซ้ำ หาก Google Translate อยู่ในภาษาที่เลือกแล้ว
+                if (combo.value !== lang) {
+                    combo.value = lang;
+                    combo.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            } else if (attempt < 40) {
+                setTimeout(() => window.applySavedLanguage(lang, attempt + 1), 250);
+            }
+        };
+        window.changeSiteLanguage = function(lang) {
+            if (!PMCA_LANGUAGES[lang]) return;
+            localStorage.setItem('pmca_language', lang);
+            window.updateLanguageLabel(lang);
+            document.getElementById('language-menu')?.classList.add('hidden');
+
+            if (lang === 'th') {
+                // ภาษาไทยคือ HTML ต้นฉบับ: ล้างสถานะ Google แล้วโหลดต้นฉบับใหม่เพียงครั้งเดียว
+                window.clearTranslateCookies();
+                const cleanUrl = location.pathname + location.search;
+                location.replace(cleanUrl);
+                return;
+            }
+
+            // สลับภาษาผ่าน widget โดยตรง ลดปัญหาหน้าขาวจากการเขียน cookie + reload ซ้ำ
+            window.applySavedLanguage(lang);
+        };
+        document.addEventListener('click', () => document.getElementById('language-menu')?.classList.add('hidden'));
+        window.addEventListener('DOMContentLoaded', () => window.updateLanguageLabel(localStorage.getItem('pmca_language') || 'th'));
+
         window.appState = {
-            teachers: [], items: [], announcements: [], innovations: [], supervisors: [], supervisorItems: [], teacherSupervisors: [], team: [], contacts: [], teamCharts: [], reactionCounts: {}, comments: [],
+            teachers: [], items: [], announcements: [], innovations: [], supervisors: [], supervisorItems: [], teacherSupervisors: [], team: [], contacts: [], teamCharts: [], reactionCounts: {}, comments: [], settings: {},
             activeTeacherId: null, isEditMode: false, activeEditId: null, pageViews: 0,
             activeRegion: null, 
             retainedFiles: [], retainedPRFiles: [],
@@ -1670,6 +1742,7 @@
                 document.getElementById('view-innovation').classList.add('hidden-view');
                 document.getElementById('view-team').classList.add('hidden-view');
                 document.getElementById('view-profile').classList.add('hidden-view');
+                document.getElementById('view-conference').classList.add('hidden-view');
                 
                 const btnNat = document.getElementById('nav-btn-national');
                 const btnDash = document.getElementById('nav-btn-dash');
@@ -1721,7 +1794,7 @@
                     window.renderNationalDashboard();
                     
                 } else {
-                    if(!this.activeRegion && viewName !== 'teachers' && viewName !== 'supervisors' && viewName !== 'profile' && viewName !== 'pr' && viewName !== 'innovation') { 
+                    if(!this.activeRegion && viewName !== 'teachers' && viewName !== 'supervisors' && viewName !== 'profile' && viewName !== 'pr' && viewName !== 'innovation' && viewName !== 'conference') { 
                         this.navigateTo('dashboard_national'); return; 
                     }
                     
@@ -1780,7 +1853,7 @@
                         window.renderTeachers();
                     } else if (viewName === 'supervisors') {
                         document.getElementById('view-supervisors').classList.remove('hidden-view');
-                        document.getElementById('supervisors-view-desc').innerText = this.activeRegion ? `คณะทำงานเครือข่ายใน ${this.activeRegion}` : 'คณะที่ปรึกษา คณะสนับสนุน และทีมสนับสนุน (Support Team: ST)';
+                        document.getElementById('supervisors-view-desc').innerText = this.activeRegion ? `คณะทำงานเครือข่ายใน ${this.activeRegion}` : 'หัวหน้าโครงการ ที่ปรึกษา คณะสนับสนุน และทีมสนับสนุน (Support Team: ST)';
                         window.renderSupervisors();
                     } else if (viewName === 'pr') {
                         window.appState.prContext = 'news';
@@ -1793,6 +1866,12 @@
                         window.appState.prContext = 'innovation';
                         document.getElementById('view-innovation').classList.remove('hidden-view');
                         window.renderPR('innovation-grid', 'นวัตกรรมการเรียนรู้');
+                    } else if (viewName === 'conference') {
+                        if (!window.appState.settings.conferenceTabEnabled && !window.appState.isAdmin) { this.navigateTo('dashboard_national'); return; }
+                        this.activeRegion = null;
+                        subtitle.innerText = window.appState.settings.conferenceTabTitle || 'เวทีประชุมวิชาการ';
+                        document.getElementById('view-conference').classList.remove('hidden-view');
+                        window.renderConferenceView();
                     } else if (viewName === 'team') {
                         document.getElementById('view-team').classList.remove('hidden-view');
                         window.renderTeam(); window.renderContacts();
@@ -1820,11 +1899,9 @@
                     response = await fetch(`${GAS_WEB_APP_URL}${separator}api=1&method=getAppData&_=${Date.now()}`, {method:'GET', redirect:'follow', cache:'no-store', signal:controller.signal});
                 } else {
                     response = await fetch(GAS_WEB_APP_URL, {
-                        method: 'POST',
-                        redirect: 'follow',
-                        headers: {'Content-Type':'text/plain;charset=utf-8'},
-                        body: JSON.stringify({api:1, method, args}),
-                        signal: controller.signal
+                        method:'POST', redirect:'follow',
+                        headers:{'Content-Type':'text/plain;charset=utf-8'},
+                        body:JSON.stringify({api:1, method, args}), signal:controller.signal
                     });
                 }
                 if (!response.ok) throw new Error(`การเชื่อมต่อ GAS ล้มเหลว (${response.status})`);
@@ -1844,7 +1921,7 @@
             if (filter) {
                 filter.innerHTML = window.teamDirectoryMode === 'st'
                     ? '<option value="st">ทีมสนับสนุน (ST) ทั้งหมด</option>'
-                    : '<option value="all">คณะทำงานทั้งหมด</option><option value="advisor">ที่ปรึกษา</option><option value="supportCommittee">คณะสนับสนุน</option>';
+                    : '<option value="all">คณะทำงานทั้งหมด</option><option value="projectLead">หัวหน้าโครงการ</option><option value="advisor">ที่ปรึกษา</option><option value="supportCommittee">คณะสนับสนุน</option>';
                 filter.value = window.teamDirectoryMode === 'st' ? 'st' : 'all';
             }
             const title = document.getElementById('supervisors-view-title');
@@ -1860,9 +1937,9 @@
                 if (chartSection) chartSection.classList.add('hidden-view');
             } else {
                 if (title) title.innerText = 'คณะทำงานเครือข่ายครู PMCA6';
-                if (desc) desc.innerText = window.appState.activeRegion ? `ที่ปรึกษาและคณะสนับสนุนใน ${window.appState.activeRegion}` : 'ที่ปรึกษาและคณะสนับสนุนเครือข่ายครู PMCA6';
+                if (desc) desc.innerText = window.appState.activeRegion ? `หัวหน้าโครงการ ที่ปรึกษา และคณะสนับสนุนใน ${window.appState.activeRegion}` : 'หัวหน้าโครงการ ที่ปรึกษา และคณะสนับสนุนเครือข่ายครู PMCA6';
                 if (addButton) addButton.innerHTML = '<i class="fa-solid fa-plus"></i> เพิ่มคณะทำงาน';
-                if (summary) summary.className = 'grid grid-cols-1 sm:grid-cols-3 gap-3';
+                if (summary) summary.className = 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3';
                 if (chartSection) chartSection.classList.remove('hidden-view');
             }
             window.renderTeamChart();
@@ -1901,6 +1978,14 @@
                 if (isGAS) return new Promise((res, rej) => google.script.run.withSuccessHandler(res).withFailureHandler(rej).setEditorSharedPassword(password, sessionStorage.getItem('pmca_editor_token')));
                 if (isRemoteGAS) return remoteGasCall('setEditorSharedPassword', [password, sessionStorage.getItem('pmca_editor_token')]);
                 return Promise.resolve({success:true});
+            },
+            saveConferenceSettings: async (settings) => {
+                if (isGAS) return new Promise((res, rej) => google.script.run.withSuccessHandler(res).withFailureHandler(rej).saveConferenceSettings(settings, sessionStorage.getItem('pmca_editor_token')));
+                if (isRemoteGAS) return remoteGasCall('saveConferenceSettings', [settings, sessionStorage.getItem('pmca_editor_token')]);
+                const mock = JSON.parse(localStorage.getItem('pmca_mock_national_v5') || '{}');
+                mock.settings = {...(mock.settings || {}), ...settings};
+                localStorage.setItem('pmca_mock_national_v5', JSON.stringify(mock));
+                return Promise.resolve(mock.settings);
             },
             init: async () => {
                 if (isRemoteGAS) {
@@ -1958,7 +2043,7 @@
                                 { id: '1', region: 'ภาคตะวันออกเฉียงเหนือ 2', name: 'นายมานะ ขยันยิ่ง', position: 'ลำดับที่ 1', subject: 'คณิตศาสตร์', awardType: 'คุณากร', school: 'โรงเรียนบรบือ', province: 'มหาสารคาม', project: 'โครงการพัฒนาสื่อคณิตศาสตร์ 4.0', projectStatus: 'อยู่ระหว่างดำเนินงาน', bio: 'พัฒนาสื่อระดับประเทศ', bgColor: THEME_COLORS[1], timestamp: Date.now() },
                                 { id: '2', region: 'ภาคเหนือ', name: 'นางสมศรี ใจดี', position: 'ลำดับที่ 2', subject: 'ภาษาไทย', awardType: 'ครูยิ่งคุณ', school: 'โรงเรียนเชียงใหม่', province: 'เชียงใหม่', project: 'อนุรักษ์ภาษาถิ่น', projectStatus: 'สำเร็จแล้ว', bio: '', bgColor: THEME_COLORS[2], timestamp: Date.now() - 100000 },
                                 { id: '3', region: 'ภาคใต้', name: 'นายสมชาย รักดี', position: 'ลำดับที่ 3', subject: 'วิทยาศาสตร์', awardType: 'ครูรางวัลสมเด็จเจ้าฟ้ามหาจักรี', school: 'โรงเรียนหาดใหญ่', province: 'สงขลา', project: 'พัฒนาการทดลองวิทย์', projectStatus: 'อนุมัติงบประมาณแล้ว', bio: '', bgColor: THEME_COLORS[3], timestamp: Date.now() - 200000 }
-                            ], items: [], announcements: [], innovations: [], supervisors: [], supervisorItems: [], teacherSupervisors: [], team: [], contacts: [], teamCharts: [], reactionCounts: {}, comments: [], pageViews: 0
+                            ], items: [], announcements: [], innovations: [], supervisors: [], supervisorItems: [], teacherSupervisors: [], team: [], contacts: [], teamCharts: [], reactionCounts: {}, comments: [], settings: {conferenceTabEnabled:false,conferenceTabTitle:'เวทีประชุมวิชาการ',conferenceHeading:'ตัวแทนครู PMCA6 ร่วมนำเสนอผลงาน',conferenceDescription:'ร่วมชม แลกเปลี่ยนเรียนรู้ และส่งกำลังใจให้ตัวแทนครู PMCA6',conferenceDate:'',conferenceLocation:''}, pageViews: 0
                         };
                     } else { mock = JSON.parse(mock); }
                     if (!Array.isArray(mock.innovations)) mock.innovations = [];
@@ -1966,6 +2051,7 @@
                     if (!Array.isArray(mock.supervisorItems)) mock.supervisorItems = [];
                     if (!Array.isArray(mock.teacherSupervisors)) mock.teacherSupervisors = [];
                     if (!Array.isArray(mock.teamCharts)) mock.teamCharts = [];
+                    if (!mock.settings) mock.settings = {conferenceTabEnabled:false,conferenceTabTitle:'เวทีประชุมวิชาการ',conferenceHeading:'ตัวแทนครู PMCA6 ร่วมนำเสนอผลงาน',conferenceDescription:'ร่วมชม แลกเปลี่ยนเรียนรู้ และส่งกำลังใจให้ตัวแทนครู PMCA6',conferenceDate:'',conferenceLocation:''};
                     mock.pageViews = (mock.pageViews || 0) + 1;
                     localStorage.setItem('pmca_mock_national_v5', JSON.stringify(mock));
                     return Promise.resolve(mock);
@@ -2210,8 +2296,84 @@
             }).join('');
         };
 
+        window.renderTeacherMarquee = function(targetId, teachers) {
+            const target = document.getElementById(targetId);
+            if (!target) return;
+            const escapeText = value => String(value ?? '').replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+            const splitTeacherName = value => {
+                const parts = String(value || '').trim().split(/\s+/).filter(Boolean);
+                if (parts.length < 2) return [parts[0] || 'ไม่ระบุชื่อ', ''];
+                return [parts.slice(0, -1).join(' '), parts[parts.length - 1]];
+            };
+            const list = (teachers || []).filter(t => t && t.id);
+            if (!list.length) { target.innerHTML = '<p class="px-6 py-6 text-sm text-gray-400">ยังไม่มีข้อมูลครู</p>'; return; }
+            const card = teacher => {
+                const name = escapeText(teacher.name || 'ไม่ระบุชื่อ');
+                const [firstName, lastName] = splitTeacherName(teacher.name);
+                const avatar = teacher.avatar
+                    ? `<img src="${escapeText(teacher.avatar)}" alt="${name}" loading="lazy" decoding="async" class="w-24 h-28 rounded-2xl object-cover object-top border-4 border-white shadow-md" onerror="this.outerHTML='<span class=&quot;w-24 h-28 rounded-2xl bg-purple-100 text-pmca-purple flex items-center justify-center text-3xl font-bold border-4 border-white shadow-md&quot;>${name.charAt(0)}</span>'">`
+                    : `<span class="w-24 h-28 rounded-2xl bg-purple-100 text-pmca-purple flex items-center justify-center text-3xl font-bold border-4 border-white shadow-md">${name.charAt(0)}</span>`;
+                const nameHtml = `<span class="mt-2 text-xs font-bold text-gray-800 leading-snug w-full"><span class="block truncate">${escapeText(firstName)}</span>${lastName ? `<span class="block truncate">${escapeText(lastName)}</span>` : ''}</span>`;
+                return `<button type="button" onclick="openTeacherProfile('${escapeText(teacher.id)}')" class="w-40 shrink-0 px-2 py-2 rounded-2xl hover:bg-purple-50 transition-colors flex flex-col items-center text-center" title="ชมผลงานของ ${name}">${avatar}${nameHtml}<span class="text-[10px] text-gray-400 mt-1 truncate w-full">${escapeText(teacher.province || teacher.region || '')}</span></button>`;
+            };
+            const cards = list.map(card).join('');
+            target.innerHTML = `<div class="teacher-marquee-track gap-2 px-3" style="--marquee-duration:${Math.max(45, list.length * 3)}s">${cards}${cards}</div>`;
+        };
+
+        window.applyConferenceVisibility = function() {
+            const settings = window.appState.settings || {};
+            const visible = settings.conferenceTabEnabled === true || String(settings.conferenceTabEnabled).toUpperCase() === 'TRUE';
+            const title = settings.conferenceTabTitle || 'เวทีประชุมวิชาการ';
+            ['nav-text-conference','mob-text-conference'].forEach(id => { const el=document.getElementById(id); if(el) el.innerText=title; });
+            const desktop = document.getElementById('nav-btn-conference');
+            const mobile = document.getElementById('mob-btn-conference');
+            if (desktop) desktop.classList.toggle('hidden-view', !visible);
+            if (mobile) { mobile.classList.toggle('hidden-view', !visible); mobile.classList.toggle('flex', visible); }
+        };
+
+        window.renderConferenceView = function() {
+            const settings = window.appState.settings || {};
+            const escapeText = value => String(value ?? '').replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+            document.getElementById('conference-heading').innerText = settings.conferenceHeading || 'ตัวแทนครู PMCA6 ร่วมนำเสนอผลงาน';
+            document.getElementById('conference-description').innerText = settings.conferenceDescription || '';
+            const meta = [];
+            if (settings.conferenceDate) meta.push(`<span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-regular fa-calendar mr-2 text-amber-300"></i>${escapeText(settings.conferenceDate)}</span>`);
+            if (settings.conferenceLocation) meta.push(`<span class="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-sm"><i class="fa-solid fa-location-dot mr-2 text-amber-300"></i>${escapeText(settings.conferenceLocation)}</span>`);
+            document.getElementById('conference-meta').innerHTML = meta.join('');
+            const isFeatured = value => value === true || String(value || '').toUpperCase() === 'TRUE';
+            const teachers = (window.appState.teachers || []).filter(t => isFeatured(t.isFeatured)).sort((a,b) => Number(a.featuredOrder || 999)-Number(b.featuredOrder || 999));
+            document.getElementById('conference-teacher-count').innerText = `${teachers.length.toLocaleString('th-TH')} คน`;
+            const grid = document.getElementById('conference-teachers-grid');
+            if (!teachers.length) { grid.innerHTML='<div class="col-span-full py-16 text-center text-gray-400 bg-gray-50 rounded-3xl border border-dashed border-gray-200">ยังไม่มีรายชื่อครูตัวแทนนำเสนอ</div>'; return; }
+            grid.innerHTML = teachers.map(t => `<button onclick="openTeacherProfile('${escapeText(t.id)}')" class="text-left bg-white rounded-3xl border border-amber-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all overflow-hidden"><div class="aspect-[4/3] bg-gradient-to-br from-purple-100 to-amber-50 flex items-center justify-center overflow-hidden">${t.avatar?`<img src="${escapeText(t.avatar)}" loading="lazy" class="w-full h-full object-cover">`:`<span class="text-5xl font-black text-purple-300">${escapeText(t.name||'?').charAt(0)}</span>`}</div><div class="p-5"><span class="text-[10px] font-black text-amber-700 bg-amber-100 px-2.5 py-1 rounded-full">ลำดับนำเสนอ ${escapeText(t.featuredOrder||'-')}</span><h4 class="font-bold text-gray-900 mt-3">${escapeText(t.name||'-')}</h4><p class="text-xs text-gray-500 mt-1">${escapeText(t.school||'-')}</p><p class="text-xs text-pmca-purple mt-2"><i class="fa-solid fa-location-dot mr-1"></i>${escapeText(t.province||t.region||'-')}</p></div></button>`).join('');
+        };
+
+        window.populateConferenceSettingsForm = function() {
+            const s = window.appState.settings || {};
+            document.getElementById('conference-enabled').checked = s.conferenceTabEnabled === true || String(s.conferenceTabEnabled).toUpperCase() === 'TRUE';
+            document.getElementById('conference-title-input').value = s.conferenceTabTitle || 'เวทีประชุมวิชาการ';
+            document.getElementById('conference-heading-input').value = s.conferenceHeading || 'ตัวแทนครู PMCA6 ร่วมนำเสนอผลงาน';
+            document.getElementById('conference-description-input').value = s.conferenceDescription || '';
+            document.getElementById('conference-date-input').value = s.conferenceDate || '';
+            document.getElementById('conference-location-input').value = s.conferenceLocation || '';
+        };
+
+        window.handleConferenceSettingsSubmit = async function(event) {
+            event.preventDefault();
+            const button = document.getElementById('btn-save-conference-settings');
+            button.classList.add('btn-loading');
+            try {
+                const settings = {conferenceTabEnabled:document.getElementById('conference-enabled').checked,conferenceTabTitle:document.getElementById('conference-title-input').value.trim(),conferenceHeading:document.getElementById('conference-heading-input').value.trim(),conferenceDescription:document.getElementById('conference-description-input').value.trim(),conferenceDate:document.getElementById('conference-date-input').value.trim(),conferenceLocation:document.getElementById('conference-location-input').value.trim()};
+                window.appState.settings = await api.saveConferenceSettings(settings);
+                window.applyConferenceVisibility();
+                window.showToast('บันทึกการตั้งค่าแท็บเฉพาะกิจแล้ว','success');
+            } catch (error) { window.showToast(error.message || 'บันทึกการตั้งค่าไม่สำเร็จ','error'); }
+            finally { button.classList.remove('btn-loading'); }
+        };
+
         window.renderNationalDashboard = function() {
             window.renderFeaturedTeachers();
+            window.renderTeacherMarquee('national-teacher-marquee', window.appState.teachers);
             document.getElementById('nat-stat-teachers').innerText = window.appState.teachers.length;
             document.getElementById('nat-stat-items').innerText = window.appState.items.length;
             document.getElementById('nat-stat-schools').innerText = new Set(window.appState.teachers.map(t => t.school ? t.school.trim() : '').filter(Boolean)).size;
@@ -2427,6 +2589,7 @@
             const teacherIds = regTeachers.map(t => t.id);
             const regItems = window.appState.items.filter(i => teacherIds.includes(i.teacherId));
             window.renderAffiliationStats('reg', regTeachers);
+            window.renderTeacherMarquee('regional-teacher-marquee', regTeachers);
             
             document.getElementById('stat-items').innerText = regItems.length;
             document.getElementById('stat-teachers').innerText = regTeachers.length;
@@ -2600,12 +2763,42 @@
             return value === 'ครูที่เข้าร่วมโครงการ' ? 'ครูที่ทำโครงการ' : (value || '');
         };
 
+        // ทำให้การค้นหาภาษาไทยสม่ำเสมอทั้งบนคอมพิวเตอร์และมือถือ
+        window.normalizeTeacherSearchText = function(value) {
+            return String(value ?? '')
+                .normalize('NFC')
+                .replace(/[\u200B-\u200D\uFEFF]/g, '')
+                .replace(/\s+/g, ' ')
+                .trim()
+                .toLocaleLowerCase('th-TH');
+        };
+
+        window.clearTeacherSearch = function() {
+            const input = document.getElementById('search-input');
+            if (input) {
+                input.value = '';
+                input.focus();
+            }
+            window.renderTeachers();
+        };
+
+        window.clearTeacherFilters = function() {
+            ['search-input', 'region-filter', 'province-filter', 'subject-filter', 'award-filter', 'teacher-type-filter', 'affiliation-filter', 'affiliation-office-filter']
+                .forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) element.value = '';
+                });
+            window.renderTeachers();
+        };
+
         window.renderTeachers = function() {
             const gridContainer = document.getElementById('teachers-grid');
             const listContainer = document.getElementById('teachers-list-container');
             const listTbody = document.getElementById('teachers-list-tbody');
             
-            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const normalizeText = window.normalizeTeacherSearchText;
+            const searchTerm = normalizeText(document.getElementById('search-input').value);
+            const searchWords = searchTerm.split(' ').filter(Boolean);
             const subjectFilter = document.getElementById('subject-filter').value;
             const provinceFilter = document.getElementById('province-filter').value;
             const regionFilter = document.getElementById('region-filter').value;
@@ -2618,26 +2811,35 @@
             listTbody.innerHTML = '';
 
             let filtered = window.appState.teachers.filter(t => {
-                if(window.appState.activeRegion && t.region !== window.appState.activeRegion) return false; 
-                if(!window.appState.activeRegion && regionFilter !== "" && t.region !== regionFilter) return false;
+                if(window.appState.activeRegion && normalizeText(t.region) !== normalizeText(window.appState.activeRegion)) return false; 
+                if(!window.appState.activeRegion && regionFilter !== "" && normalizeText(t.region) !== normalizeText(regionFilter)) return false;
+
+                const searchableText = normalizeText([
+                    t.name, t.school, t.province, t.region, t.affiliation,
+                    t.affiliationOffice, t.position, t.subject, t.awardType,
+                    t.project, t.projectStatus, window.getTeacherTypeLabel(t.teacherType)
+                ].join(' '));
+                const matchSearch = searchWords.length === 0 || searchWords.every(word => searchableText.includes(word));
                 
-                const matchSearch = (t.name && t.name.toLowerCase().includes(searchTerm)) || 
-                                    (t.school && t.school.toLowerCase().includes(searchTerm)) ||
-                                    (t.affiliation && t.affiliation.toLowerCase().includes(searchTerm)) ||
-                                    (t.affiliationOffice && t.affiliationOffice.toLowerCase().includes(searchTerm)) ||
-                                    (window.getTeacherTypeLabel(t.teacherType).toLowerCase().includes(searchTerm)) ||
-                                    (t.province && t.province.toLowerCase().includes(searchTerm)) ||
-                                    (t.position && t.position.toLowerCase().includes(searchTerm));
-                
-                const matchSubject = subjectFilter === "" || (t.subject && t.subject.trim() === subjectFilter);
-                const matchProv = provinceFilter === "" || (t.province && t.province.trim() === provinceFilter);
-                const matchAward = awardFilter === "" || (t.awardType && t.awardType.trim() === awardFilter);
+                const matchSubject = subjectFilter === "" || normalizeText(t.subject) === normalizeText(subjectFilter);
+                const matchProv = provinceFilter === "" || normalizeText(t.province) === normalizeText(provinceFilter);
+                const matchAward = awardFilter === "" || normalizeText(t.awardType) === normalizeText(awardFilter);
                 const matchTeacherType = teacherTypeFilter === "" || (teacherTypeFilter === '__unspecified__' ? !String(t.teacherType || '').trim() : window.getTeacherTypeLabel(t.teacherType) === teacherTypeFilter);
-                const matchAffiliation = affiliationFilter === "" || (t.affiliation && t.affiliation.trim() === affiliationFilter);
-                const matchAffiliationOffice = affiliationOfficeFilter === "" || (t.affiliationOffice && t.affiliationOffice.trim() === affiliationOfficeFilter);
+                const matchAffiliation = affiliationFilter === "" || normalizeText(t.affiliation) === normalizeText(affiliationFilter);
+                const matchAffiliationOffice = affiliationOfficeFilter === "" || normalizeText(t.affiliationOffice) === normalizeText(affiliationOfficeFilter);
                 
                 return matchSearch && matchSubject && matchProv && matchAward && matchTeacherType && matchAffiliation && matchAffiliationOffice;
             });
+
+            const resultCount = document.getElementById('teachers-result-count');
+            if (resultCount) {
+                const total = window.appState.activeRegion
+                    ? window.appState.teachers.filter(t => normalizeText(t.region) === normalizeText(window.appState.activeRegion)).length
+                    : window.appState.teachers.length;
+                resultCount.innerText = searchTerm || subjectFilter || provinceFilter || regionFilter || awardFilter || teacherTypeFilter || affiliationFilter || affiliationOfficeFilter
+                    ? `พบ ${filtered.length.toLocaleString('th-TH')} คน จากทั้งหมด ${total.toLocaleString('th-TH')} คน`
+                    : `กำลังแสดงข้อมูลครูทั้งหมด ${filtered.length.toLocaleString('th-TH')} คน`;
+            }
 
             if (filtered.length === 0) {
                 gridContainer.classList.remove('hidden-view');
@@ -2888,43 +3090,46 @@
                 if (sortBy === 'oldest') return timestampValue(a)-timestampValue(b);
                 if (sortBy === 'newest') return timestampValue(b)-timestampValue(a);
                 if (sortBy === 'recommended') {
-                    const rank = {advisor:0, st:1, supportCommittee:2};
+                    const rank = {projectLead:0, advisor:1, st:2, supportCommittee:3};
                     const typeDiff = (rank[normalizedType(a)] ?? 99) - (rank[normalizedType(b)] ?? 99);
                     if (typeDiff) return typeDiff;
                     return timestampValue(a)-timestampValue(b) || (a.name||'').localeCompare(b.name||'','th');
                 }
                 return (a.name||'').localeCompare(b.name||'','th');
             });
-            const counts = {advisor:all.filter(s=>normalizedType(s)==='advisor').length,st:all.filter(s=>normalizedType(s)==='st').length,supportCommittee:all.filter(s=>normalizedType(s)==='supportCommittee').length};
+            const counts = {projectLead:all.filter(s=>normalizedType(s)==='projectLead').length,advisor:all.filter(s=>normalizedType(s)==='advisor').length,st:all.filter(s=>normalizedType(s)==='st').length,supportCommittee:all.filter(s=>normalizedType(s)==='supportCommittee').length};
             const summary = document.getElementById('team-summary');
             const summaryItems = directoryMode === 'st'
                 ? [['st','ทีมสนับสนุน (ST) ทั้งหมด',counts.st,'fa-user-tie','bg-blue-50 text-blue-600']]
                 : [
                     ['all','คณะทำงานทั้งหมด',all.length,'fa-people-group','bg-purple-50 text-purple-600'],
+                    ['projectLead','หัวหน้าโครงการ',counts.projectLead,'fa-crown','bg-fuchsia-50 text-fuchsia-700'],
                     ['advisor','ที่ปรึกษา',counts.advisor,'fa-user-group','bg-orange-50 text-orange-600'],
                     ['supportCommittee','คณะสนับสนุน',counts.supportCommittee,'fa-people-carry-box','bg-teal-50 text-teal-600']
                 ];
             if(summary) summary.innerHTML = summaryItems.map(x=>`<button onclick="setTeamTypeFilter('${x[0]}')" class="text-left bg-white rounded-2xl border p-4 flex items-center gap-3 transition-all hover:-translate-y-0.5 hover:shadow-md ${typeFilter===x[0]?'border-blue-400 ring-4 ring-blue-50':'border-gray-100'}"><div class="w-10 h-10 rounded-xl ${x[4]} flex items-center justify-center"><i class="fa-solid ${x[3]}"></i></div><div><p class="text-xl font-black text-gray-900">${x[2].toLocaleString('th-TH')}</p><p class="text-xs text-gray-500">${x[1]}</p></div></button>`).join('');
             document.getElementById('team-result-count').innerText = `แสดง ${list.length.toLocaleString('th-TH')} จาก ${all.length.toLocaleString('th-TH')} คน`;
+            document.getElementById('team-projectLead-count').innerText = `(${list.filter(s=>normalizedType(s)==='projectLead').length.toLocaleString('th-TH')})`;
             document.getElementById('team-advisor-count').innerText = `(${list.filter(s=>normalizedType(s)==='advisor').length.toLocaleString('th-TH')})`;
             document.getElementById('team-st-count').innerText = `(${list.filter(s=>normalizedType(s)==='st').length.toLocaleString('th-TH')})`;
             document.getElementById('team-supportCommittee-count').innerText = `(${list.filter(s=>normalizedType(s)==='supportCommittee').length.toLocaleString('th-TH')})`;
             const renderCards = (members, type) => members.length ? members.map(s => {
                 const teacherIds = window.appState.teacherSupervisors.filter(x=>x.supervisorId===s.id).map(x=>x.teacherId);
-                const palette = type === 'advisor' ? ['bg-orange-50','text-orange-500','fa-user-group'] : type === 'supportCommittee' ? ['bg-teal-50','text-teal-600','fa-people-carry-box'] : ['bg-blue-50','text-blue-500','fa-user-tie'];
+                const palette = type === 'projectLead' ? ['bg-fuchsia-50','text-fuchsia-700','fa-crown'] : type === 'advisor' ? ['bg-orange-50','text-orange-500','fa-user-group'] : type === 'supportCommittee' ? ['bg-teal-50','text-teal-600','fa-people-carry-box'] : ['bg-blue-50','text-blue-500','fa-user-tie'];
                 const footer = type === 'st' ? `<div class="mt-5 pt-4 border-t border-gray-100 text-xs font-bold text-purple-600"><i class="fa-solid fa-users mr-2"></i>ดูแลครู ${teacherIds.length.toLocaleString('th-TH')} คน</div>` : '';
-                const typeLabel = type === 'advisor' ? 'ที่ปรึกษา' : type === 'supportCommittee' ? 'คณะสนับสนุน' : 'ทีมสนับสนุน (ST)';
+                const typeLabel = type === 'projectLead' ? 'หัวหน้าโครงการ' : type === 'advisor' ? 'ที่ปรึกษา' : type === 'supportCommittee' ? 'คณะสนับสนุน' : 'ทีมสนับสนุน (ST)';
                 return `<div onclick="openSupervisorDetail('${s.id}')" class="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer group relative"><div class="absolute top-4 right-4 flex gap-2 opacity-100 lg:opacity-0 group-hover:opacity-100"><button onclick="event.stopPropagation();openSupervisorModal(true,'${s.id}')" class="w-9 h-9 rounded-full bg-blue-50 text-blue-600" title="แก้ไข"><i class="fa-solid fa-pen"></i></button><button onclick="event.stopPropagation();deleteData('Supervisors','${s.id}')" class="w-9 h-9 rounded-full bg-red-50 text-red-500" title="ลบ"><i class="fa-solid fa-trash"></i></button></div><div class="flex items-start gap-4 pr-16"><div class="w-16 h-16 rounded-2xl ${palette[0]} overflow-hidden flex items-center justify-center shrink-0">${s.avatar ? `<img src="${s.avatar}" class="w-full h-full object-cover">` : `<i class="fa-solid ${palette[2]} text-2xl ${palette[1]}"></i>`}</div><div class="min-w-0 flex-1"><h4 class="font-bold text-gray-900 text-lg leading-snug whitespace-normal break-words">${s.name||'-'}</h4><p class="text-sm ${palette[1]} mt-1 whitespace-normal break-words">${s.position || typeLabel}</p><span class="inline-flex mt-2 px-2.5 py-1 rounded-full text-[11px] font-bold ${palette[0]} ${palette[1]}">${typeLabel}</span></div></div><div class="mt-4 pt-4 border-t border-gray-100 space-y-2"><p class="text-sm text-gray-500 truncate" title="${s.agency||'-'}"><i class="fa-solid fa-building w-5"></i>${s.agency || '-'}</p><p class="text-sm text-gray-500 truncate"><i class="fa-solid fa-earth-asia w-5"></i>${s.region || '-'}</p>${type === 'st' ? `<p class="text-sm text-gray-500 line-clamp-2"><i class="fa-solid fa-map-location-dot w-5"></i>${s.provinces || '-'}</p>` : ''}</div>${footer}<button class="mt-4 w-full py-2.5 rounded-xl bg-gray-50 text-gray-600 text-xs font-bold group-hover:bg-blue-50 group-hover:text-blue-700">ดูรายละเอียด <i class="fa-solid fa-arrow-right ml-1"></i></button></div>`;
             }).join('') : '<div class="col-span-full py-8 text-center text-gray-400 text-sm">ยังไม่มีข้อมูลในกลุ่มนี้</div>';
+            document.getElementById('team-projectLead-grid').innerHTML = renderCards(list.filter(s => normalizedType(s) === 'projectLead'), 'projectLead');
             document.getElementById('team-advisor-grid').innerHTML = renderCards(list.filter(s => normalizedType(s) === 'advisor'), 'advisor');
             document.getElementById('team-st-grid').innerHTML = renderCards(list.filter(s => !s.memberType || s.memberType === 'st'), 'st');
             document.getElementById('team-supportCommittee-grid').innerHTML = renderCards(list.filter(s => normalizedType(s) === 'supportCommittee'), 'supportCommittee');
-            [['team-advisor-grid','advisor'],['team-st-grid','st'],['team-supportCommittee-grid','supportCommittee']].forEach(([id,type]) => {
+            [['team-projectLead-grid','projectLead'],['team-advisor-grid','advisor'],['team-st-grid','st'],['team-supportCommittee-grid','supportCommittee']].forEach(([id,type]) => {
                 const hasMembers = list.some(s => normalizedType(s) === type);
                 document.getElementById(id)?.closest('section')?.classList.toggle('hidden-view', !hasMembers);
             });
             document.getElementById('team-all-grid').innerHTML = list.length ? list.map(s => renderCards([s], normalizedType(s))).join('') : '<div class="col-span-full py-16 text-center text-gray-400">ไม่พบข้อมูลคณะทำงาน</div>';
-            document.querySelectorAll('#team-all-grid img, #team-advisor-grid img, #team-st-grid img, #team-supportCommittee-grid img').forEach(img => {
+            document.querySelectorAll('#team-all-grid img, #team-projectLead-grid img, #team-advisor-grid img, #team-st-grid img, #team-supportCommittee-grid img').forEach(img => {
                 img.classList.add('cursor-zoom-in', 'hover:scale-105', 'transition-transform', 'duration-300');
                 img.setAttribute('title', 'คลิกเพื่อขยายรูปภาพ');
                 img.setAttribute('role', 'button');
@@ -2936,8 +3141,8 @@
                     }
                 };
             });
-            const labels={advisor:'ที่ปรึกษา',st:'ทีมสนับสนุน (ST)',supportCommittee:'คณะสนับสนุน'};
-            const colors={advisor:'bg-orange-50 text-orange-700',st:'bg-blue-50 text-blue-700',supportCommittee:'bg-teal-50 text-teal-700'};
+            const labels={projectLead:'หัวหน้าโครงการ',advisor:'ที่ปรึกษา',st:'ทีมสนับสนุน (ST)',supportCommittee:'คณะสนับสนุน'};
+            const colors={projectLead:'bg-fuchsia-50 text-fuchsia-700',advisor:'bg-orange-50 text-orange-700',st:'bg-blue-50 text-blue-700',supportCommittee:'bg-teal-50 text-teal-700'};
             document.getElementById('team-table-body').innerHTML = list.length ? list.map(s=>{const type=normalizedType(s);return `<tr class="hover:bg-blue-50/40 cursor-pointer" onclick="openSupervisorDetail('${s.id}')"><td class="p-4"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-xl bg-gray-100 overflow-hidden flex items-center justify-center shrink-0">${s.avatar?`<img src="${s.avatar}" class="w-full h-full object-cover">`:'<i class="fa-solid fa-user text-gray-400"></i>'}</div><div><p class="font-bold text-gray-900">${s.name||'-'}</p><p class="text-xs text-gray-500">${s.position||'-'}</p></div></div></td><td class="p-4"><span class="px-3 py-1.5 rounded-full text-xs font-bold ${colors[type]}">${labels[type]}</span></td><td class="p-4"><p>${s.region||'-'}</p><p class="text-xs text-gray-500 mt-1">${type==='st'?(s.provinces||'-'):'-'}</p></td><td class="p-4 text-gray-600">${s.agency||'-'}</td><td class="p-4 text-center font-bold text-purple-600">${type==='st'?teacherCount(s).toLocaleString('th-TH'):'-'}</td><td class="p-4"><div class="flex justify-end gap-2"><button onclick="event.stopPropagation();openSupervisorModal(true,'${s.id}')" class="w-9 h-9 rounded-full bg-blue-50 text-blue-600"><i class="fa-solid fa-pen"></i></button><button onclick="event.stopPropagation();deleteData('Supervisors','${s.id}')" class="w-9 h-9 rounded-full bg-red-50 text-red-500"><i class="fa-solid fa-trash"></i></button></div></td></tr>`}).join('') : '<tr><td colspan="6" class="p-16 text-center text-gray-400">ไม่พบข้อมูลคณะทำงานที่ตรงกับตัวกรอง</td></tr>';
             window.setTeamHubView(window.teamHubView || 'grouped');
         };
@@ -2957,7 +3162,7 @@
             const memberTypeSelect = document.getElementById('st-memberType');
             memberTypeSelect.innerHTML = window.teamDirectoryMode === 'st'
                 ? '<option value="st">ทีมสนับสนุน (ST)</option>'
-                : '<option value="advisor">ที่ปรึกษา</option><option value="supportCommittee">คณะสนับสนุน</option>';
+                : '<option value="projectLead">หัวหน้าโครงการ</option><option value="advisor">ที่ปรึกษา</option><option value="supportCommittee">คณะสนับสนุน</option>';
             document.getElementById('supervisor-form').reset();
             document.getElementById('st-avatar-preview').innerHTML='<i class="fa-solid fa-user-tie text-3xl"></i>';
             document.getElementById('st-region').value=window.appState.activeRegion||'ภาคเหนือ';
@@ -2983,7 +3188,7 @@
             const teachers=window.appState.teacherSupervisors.filter(x=>x.supervisorId===id).map(l=>window.appState.teachers.find(t=>t.id===l.teacherId)).filter(Boolean);
             const items=window.appState.supervisorItems.filter(x=>x.supervisorId===id);
             const type=s.memberType==='expert'?'advisor':s.memberType==='support'?'supportCommittee':(s.memberType||'st');
-            const typeLabels={advisor:'ที่ปรึกษา',st:'ทีมสนับสนุน (ST)',supportCommittee:'คณะสนับสนุน'};
+            const typeLabels={projectLead:'หัวหน้าโครงการ',advisor:'ที่ปรึกษา',st:'ทีมสนับสนุน (ST)',supportCommittee:'คณะสนับสนุน'};
             const typeLabel=typeLabels[type]||'สมาชิกทีม';
             const detailItem=(icon,label,value,color='blue')=>`<div class="p-4 rounded-2xl bg-${color}-50/60 border border-${color}-100"><p class="text-[11px] font-bold text-${color}-600 mb-1"><i class="fa-solid ${icon} mr-1.5"></i>${label}</p><p class="text-sm font-medium text-gray-800 break-words">${value||'-'}</p></div>`;
             const teacherSection=type==='st'?`<div class="mt-7 pt-7 border-t border-gray-100"><div class="flex items-center justify-between mb-4"><h3 class="font-bold"><i class="fa-solid fa-users text-purple-600 mr-2"></i>ครูที่รับผิดชอบ</h3><span class="text-xs font-bold bg-purple-50 text-purple-700 px-3 py-1 rounded-full">${teachers.length} คน</span></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${teachers.length?teachers.map(t=>`<button onclick="closeModal('supervisor-detail-modal');openTeacherProfile('${t.id}')" class="text-left p-4 rounded-2xl bg-gray-50 hover:bg-purple-50 border border-gray-100"><p class="font-bold">${t.name}</p><p class="text-xs text-gray-500 mt-1">${t.school||'-'} • ${t.province||'-'}</p></button>`).join(''):'<p class="sm:col-span-2 text-sm text-gray-400 py-4">ยังไม่ได้เชื่อมกับครู</p>'}</div><p class="text-xs text-gray-400 mt-5"><i class="fa-solid fa-folder-open mr-1"></i>แฟ้มผลงาน ST ${items.length} รายการ</p></div>`:'';
@@ -3034,58 +3239,6 @@
             });
         }
 
-        window.renderTeacherDigitalTwin = function(teacher) {
-            if (!teacher) return;
-            const teacherId = String(teacher.id || '');
-            const items = (window.appState.items || []).filter(item => String(item.teacherId || '') === teacherId);
-            const hasText = value => String(value || '').trim().length > 0;
-            const fileTypes = items.flatMap(item => String(item.fileType || '').split('|||'));
-            const fileUrls = items.flatMap(item => String(item.fileData || '').split('|||').filter(Boolean));
-            const imageCount = fileTypes.filter(type => String(type).startsWith('image/')).length || fileUrls.filter(url => String(url).startsWith('data:image')).length;
-            const categoryCount = new Set(items.map(item => String(item.itemCategory || '').trim()).filter(Boolean)).size;
-            const hasEvidence = items.some(item => hasText(item.fileData) || hasText(item.url));
-            const dateValues = items.map(item => {
-                const raw = item.lastUpdated || item.timestamp;
-                const numeric = Number(raw);
-                const parsed = Number.isFinite(numeric) && numeric > 0 ? numeric : Date.parse(raw);
-                return Number.isFinite(parsed) ? parsed : 0;
-            }).filter(Boolean);
-            const latestTime = dateValues.length ? Math.max(...dateValues) : 0;
-            const ageDays = latestTime ? Math.floor((Date.now() - latestTime) / 86400000) : Infinity;
-
-            const identityScore = (hasText(teacher.name) ? 5 : 0) + (hasText(teacher.avatar) ? 5 : 0) + (hasText(teacher.school) ? 5 : 0) + (hasText(teacher.region) && hasText(teacher.province) ? 5 : 0);
-            const projectScore = (hasText(teacher.project) ? 10 : 0) + (hasText(teacher.projectStatus) ? 10 : 0);
-            const portfolioScore = (items.length >= 1 ? 15 : 0) + (items.length >= 3 ? 10 : 0) + (hasEvidence ? 5 : 0);
-            const profileScore = (hasText(teacher.bio) ? 5 : 0) + (hasText(teacher.subject) && hasText(teacher.awardType) ? 5 : 0) + (hasText(teacher.affiliation) && hasText(teacher.affiliationOffice) ? 5 : 0);
-            const freshnessScore = ageDays <= 90 ? 15 : ageDays <= 180 ? 10 : latestTime ? 5 : 0;
-            const score = Math.min(identityScore + projectScore + portfolioScore + profileScore + freshnessScore, 100);
-            const status = score >= 85 ? ['พร้อมนำเสนอ', 'bg-emerald-400/20 text-emerald-200 border-emerald-300/30'] : score >= 65 ? ['ข้อมูลค่อนข้างพร้อม', 'bg-blue-400/20 text-blue-200 border-blue-300/30'] : score >= 40 ? ['ควรเพิ่มเติมข้อมูล', 'bg-amber-400/20 text-amber-200 border-amber-300/30'] : ['อยู่ระหว่างจัดทำ', 'bg-rose-400/20 text-rose-200 border-rose-300/30'];
-
-            document.getElementById('twin-score').innerText = score;
-            const ring = document.getElementById('twin-score-ring');
-            ring.style.background = `conic-gradient(#c084fc ${score}%, rgba(255,255,255,.12) ${score}%)`;
-            ring.setAttribute('aria-valuenow', String(score));
-            const badge = document.getElementById('twin-readiness-badge');
-            badge.innerText = status[0];
-            badge.className = `self-start lg:self-auto px-4 py-2 rounded-full border text-sm font-bold ${status[1]}`;
-            document.getElementById('twin-item-count').innerText = items.length.toLocaleString('th-TH');
-            document.getElementById('twin-image-count').innerText = imageCount.toLocaleString('th-TH');
-            document.getElementById('twin-category-count').innerText = categoryCount.toLocaleString('th-TH');
-            document.getElementById('twin-last-update').innerText = latestTime ? `อัปเดตผลงานล่าสุด ${new Date(latestTime).toLocaleDateString('th-TH', {day:'numeric', month:'short', year:'numeric'})}` : 'ยังไม่มีการอัปเดตผลงาน';
-
-            const checks = [
-                ['ข้อมูลประจำตัว', identityScore, 20, 'fa-id-card'],
-                ['ข้อมูลโครงการ', projectScore, 20, 'fa-lightbulb'],
-                ['แฟ้มผลงานและหลักฐาน', portfolioScore, 30, 'fa-folder-open'],
-                ['รายละเอียดโปรไฟล์', profileScore, 15, 'fa-address-card'],
-                ['ความเป็นปัจจุบัน', freshnessScore, 15, 'fa-clock-rotate-left']
-            ];
-            document.getElementById('twin-checklist').innerHTML = checks.map(([label, earned, total, icon]) => {
-                const complete = earned === total;
-                return `<div class="flex items-center gap-3 p-3 rounded-2xl ${complete ? 'bg-emerald-400/10 border-emerald-300/20' : 'bg-white/5 border-white/10'} border"><span class="w-9 h-9 shrink-0 rounded-xl ${complete ? 'bg-emerald-400/20 text-emerald-300' : 'bg-white/10 text-purple-200'} flex items-center justify-center"><i class="fa-solid ${complete ? 'fa-check' : icon}"></i></span><span class="min-w-0 flex-1"><span class="block text-xs font-bold truncate">${label}</span><span class="block h-1.5 bg-white/10 rounded-full overflow-hidden mt-2"><span class="block h-full ${complete ? 'bg-emerald-400' : 'bg-purple-400'} rounded-full" style="width:${Math.round(earned / total * 100)}%"></span></span></span><strong class="text-xs text-purple-100">${earned}/${total}</strong></div>`;
-            }).join('');
-        };
-
         window.openTeacherProfile = function(id) {
             window.appState.activeTeacherId = id;
             const teacher = window.appState.teachers.find(t => t.id === id);
@@ -3132,7 +3285,6 @@
             else { coverImg.classList.add('hidden-view'); coverColor.className = `absolute inset-0 ${teacher.bgColor || THEME_COLORS[0]}`; coverColor.classList.remove('hidden-view'); }
             
             window.renderProfileSupervisors(id);
-            window.renderTeacherDigitalTwin(teacher);
             window.appState.navigateTo('profile');
         }
 
@@ -3208,8 +3360,6 @@
             
             let tItems = window.appState.items.filter(i => i.teacherId === window.appState.activeTeacherId).sort((a,b) => (a.timestamp || 0) - (b.timestamp || 0));
             document.getElementById('count-all').innerText = tItems.length;
-            const activeTeacher = window.appState.teachers.find(t => String(t.id) === String(window.appState.activeTeacherId));
-            if (activeTeacher) window.renderTeacherDigitalTwin(activeTeacher);
 
             if (tItems.length === 0) { grid.classList.add('hidden-view'); emptyState.classList.remove('hidden-view'); return; }
             grid.classList.remove('hidden-view'); emptyState.classList.add('hidden-view');
@@ -3855,6 +4005,7 @@
             btn.classList.remove('text-gray-500');
             if (tab === 'analytics') window.renderAdminAnalytics();
             if (tab === 'manage') window.renderAdminDashboard();
+            if (tab === 'conference') window.populateConferenceSettingsForm();
         };
 
         window.renderAdminBarList = function(targetId, entries, color = 'bg-purple-500') {
@@ -4360,13 +4511,22 @@
             window.appState.teamCharts = forceStringId(data.teamCharts || []);
             window.appState.reactionCounts = data.reactionCounts || {};
             window.appState.comments = forceStringId(data.comments || []);
+            window.appState.settings = data.settings || {conferenceTabEnabled:false,conferenceTabTitle:'เวทีประชุมวิชาการ',conferenceHeading:'ตัวแทนครู PMCA6 ร่วมนำเสนอผลงาน',conferenceDescription:'',conferenceDate:'',conferenceLocation:''};
+            window.applyConferenceVisibility();
         }
 
         window.onload = bootApp;
     </script>
     
-    <script type="text/javascript">function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'th', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element'); }</script>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage:'th',includedLanguages:'en,zh-CN,ja,ko',autoDisplay:false}, 'google_translate_element');
+            const savedLanguage = localStorage.getItem('pmca_language') || 'th';
+            window.updateLanguageLabel(savedLanguage);
+            if (savedLanguage !== 'th') window.applySavedLanguage(savedLanguage);
+        }
+    </script>
     <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-    <style>.goog-te-banner-frame.skiptranslate { display: none !important; } body { top: 0px !important; } .goog-te-gadget-simple { background-color: #f8fafc !important; border-radius: 0.5rem !important; border: none !important; padding: 8px 12px !important; font-family: 'Prompt', sans-serif !important; font-size: 14px !important; cursor: pointer; } .goog-te-gadget-simple .goog-te-menu-value { color: #6b21a8 !important; font-weight: 500; } .goog-te-gadget-simple .goog-te-menu-value span { text-decoration: none !important; } .goog-te-gadget-icon { display: none; } .goog-logo-link { display: none !important; } .goog-te-gadget { color: transparent !important; }</style>
+    <style>.goog-te-banner-frame.skiptranslate,.VIpgJd-ZVi9od-ORHb-OEVmcd { display:none !important; } html,body { top:0 !important; } body > .skiptranslate { display:none !important; } #google_translate_element { opacity:0 !important; pointer-events:none !important; } .goog-text-highlight { background:none !important; box-shadow:none !important; }</style>
 </body>
 </html>
