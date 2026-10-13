@@ -11,7 +11,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <script src="config.js"></script>
+    <script>
+        // ค่าการเชื่อมต่อสำหรับ GitHub Pages (ฝังไว้ในไฟล์เพื่อไม่ให้ GAS หา config.js แล้วเกิด 404)
+        window.PMCA_CONFIG = window.PMCA_CONFIG || {
+            gasWebAppUrl: 'https://script.google.com/macros/s/AKfycbwvIPpoNS_KoXiCGZXugJJGie1SPt_tIjfogaddLrZxoB1c4vdgNbcO66UdMpxyiSur/exec'
+        };
+    </script>
     <script>
         tailwind.config = {
             theme: {
@@ -1889,7 +1894,7 @@
         const isRemoteGAS = !isGAS && /^https:\/\/script\.google\.com\/macros\/s\/.+\/exec(?:\?.*)?$/.test(GAS_WEB_APP_URL);
 
         const remoteGasCall = async (method, args = []) => {
-            if (!isRemoteGAS) throw new Error('ยังไม่ได้ตั้งค่า GAS Web App URL ใน config.js');
+            if (!isRemoteGAS) throw new Error('ยังไม่ได้ตั้งค่า GAS Web App URL ใน index.html');
             const controller = new AbortController();
             const timeout = setTimeout(() => controller.abort(), 120000);
             try {
